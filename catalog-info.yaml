@@ -125,8 +125,7 @@ spec:
 
   # Output (local)
   output:
-  links:
-    - title: Generated project (local)
-      url: ${{ steps.publish.output.repoContentsUrl }}
-    - title: Open in catalog
-      entityRef: ${{ steps.register.output.entityRef }}
+  output:
+    text:
+      - title: Result
+        content: "Project generated successfully (local mode)"
