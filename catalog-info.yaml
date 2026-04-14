@@ -38,11 +38,15 @@ spec:
         - repoUrl
       properties:
         repoUrl:
+          title: Repository Location
           type: string
           ui:field: RepoUrlPicker
           ui:options:
             allowedHosts:
               - gitlab.insee.fr
+              - github.com
+            allowedOwners:
+              - Rayane759
 
   steps:
 
