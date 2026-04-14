@@ -64,25 +64,24 @@ spec:
     # -------------------------
     - id: publish
       name: Create repository
-      action: publish:gitlab
+      action: publish:filesystem
       input:
-        repoUrl: ${{ parameters.repoUrl }}
-        defaultBranch: main
+        path: /tmp/backstage-output
 
-    # -------------------------
-    # 3. GitOps (MR infra)
-    # -------------------------
-    - id: create-mr
-      name: Create GitOps Merge Request
-      action: gitlab:mergeRequest:create
-      input:
-        repoUrl: gitlab.insee.fr?owner=platform&repo=infra
-        title: "feat: onboard ${{ parameters.name }}"
-        description: "Add Helm chart for ${{ parameters.name }}"
-        branchName: feat/onboard-${{ parameters.name }}
-        targetBranchName: main
-        sourcePath: ./helm
-        targetPath: services/${{ parameters.name }}
+    # # -------------------------
+    # # 3. GitOps (MR infra)
+    # # -------------------------
+    # - id: create-mr
+    #   name: Create GitOps Merge Request
+    #   action: gitlab:mergeRequest:create
+    #   input:
+    #     repoUrl: gitlab.insee.fr?owner=platform&repo=infra
+    #     title: "feat: onboard ${{ parameters.name }}"
+    #     description: "Add Helm chart for ${{ parameters.name }}"
+    #     branchName: feat/onboard-${{ parameters.name }}
+    #     targetBranchName: main
+    #     sourcePath: ./helm
+    #     targetPath: services/${{ parameters.name }}
 
     # -------------------------
     # 4. Register in Backstage
