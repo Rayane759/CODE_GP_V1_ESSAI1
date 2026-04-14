@@ -63,14 +63,24 @@ spec:
           hasBackend: ${{ parameters.hasBackend }}
           hasFrontend: ${{ parameters.hasFrontend }}
 
+    # # -------------------------
+    # # 2. Create GitLab repo
+    # # -------------------------
+    # - id: publish
+    #   name: Create repository
+    #   action: publish:github
+    #   input:
+    #     repoUrl: github.com?owner=Rayane759&repo=${{ parameters.name }}
+
     # -------------------------
-    # 2. Create GitLab repo
+    # 2. Create local repository
     # -------------------------
     - id: publish
-      name: Create repository
-      action: publish:github
+      name: Create repository (local)
+      action: publish:local
       input:
-        repoUrl: github.com?owner=Rayane759&repo=${{ parameters.name }}
+        repoContents: ${{ steps.fetch.output.targetPath }}
+
     # # -------------------------
     # # 3. GitOps (MR infra)
     # # -------------------------
@@ -86,19 +96,37 @@ spec:
     #     sourcePath: ./helm
     #     targetPath: services/${{ parameters.name }}
 
+    # # -------------------------
+    # # 4. Register in Backstage
+    # # -------------------------
+    # - id: register
+    #   name: Register
+    #   action: catalog:register
+    #   input:
+    #     repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+    #     catalogInfoPath: /catalog-info.yaml
+
     # -------------------------
-    # 4. Register in Backstage
+    # 3. Register in Backstage (local)
     # -------------------------
     - id: register
       name: Register
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
-        catalogInfoPath: /catalog-info.yaml
+        catalogInfoPath: catalog-info.yaml
 
+  # output:
+  #   links:
+  #     - title: Repository
+  #       url: ${{ steps.publish.output.remoteUrl }}
+  #     - title: Open in catalog
+  #       entityRef: ${{ steps.register.output.entityRef }}
+
+  # Output (local)
   output:
-    links:
-      - title: Repository
-        url: ${{ steps.publish.output.remoteUrl }}
-      - title: Open in catalog
-        entityRef: ${{ steps.register.output.entityRef }}
+  links:
+    - title: Generated project (local)
+      url: ${{ steps.publish.output.repoContentsUrl }}
+    - title: Open in catalog
+      entityRef: ${{ steps.register.output.entityRef }}
