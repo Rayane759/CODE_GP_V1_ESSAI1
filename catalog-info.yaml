@@ -43,7 +43,6 @@ spec:
           ui:field: RepoUrlPicker
           ui:options:
             allowedHosts:
-              - gitlab.insee.fr
               - github.com
             allowedOwners:
               - Rayane759
@@ -73,13 +72,15 @@ spec:
     #     repoUrl: github.com?owner=Rayane759&repo=${{ parameters.name }}
 
     # -------------------------
-    # 2. Create local repository
+    # 2. Create GitHub repository
     # -------------------------
     - id: publish
-      name: Create repository (local)
-      action: publish:local
+      name: Create repository (GitHub)
+      action: publish:github
       input:
-        repoContents: ${{ steps.fetch.output.targetPath }}
+        repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
+        protectDefaultBranch: false
 
     # # -------------------------
     # # 3. GitOps (MR infra)
@@ -107,14 +108,14 @@ spec:
     #     catalogInfoPath: /catalog-info.yaml
 
     # -------------------------
-    # 3. Register in Backstage (local)
+    # 4. Register in Backstage (GitHub)
     # -------------------------
     - id: register
       name: Register
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
-        catalogInfoPath: catalog-info.yaml
+        catalogInfoPath: /catalog-info.yaml
 
   # output:
   #   links:
@@ -125,7 +126,8 @@ spec:
 
   # Output (local)
   output:
-  output:
-    text:
-      - title: Result
-        content: "Project generated successfully (local mode)"
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in catalog
+        entityRef: ${{ steps.register.output.entityRef }}
