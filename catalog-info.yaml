@@ -68,10 +68,9 @@ spec:
     # -------------------------
     - id: publish
       name: Create repository
-      action: publish:filesystem
+      action: publish:github
       input:
-        path: /tmp/backstage-output
-
+        repoUrl: github.com?owner=Rayane759&repo=${{ parameters.name }}
     # # -------------------------
     # # 3. GitOps (MR infra)
     # # -------------------------
